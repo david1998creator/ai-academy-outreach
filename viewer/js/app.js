@@ -25,6 +25,9 @@ function initApp() {
   renderCategoryFeeds();
   initDefaultFlyer();
   updateGalleryCountBadges();
+  if (typeof initLeadsTab === 'function') {
+    initLeadsTab();
+  }
 }
 
 function saveDb() {

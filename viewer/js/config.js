@@ -3,6 +3,65 @@
 const STORAGE_KEY_DB = 'waynautic_campaigns_db';
 const STORAGE_KEY_API = 'waynautic_gemini_api_key';
 const STORAGE_KEY_GALLERY = 'waynautic_flyer_gallery';
+const STORAGE_KEY_LEADS = 'waynautic_leads_pipeline';
+const STORAGE_KEY_GOOGLE_API = 'waynautic_google_search_key';
+const STORAGE_KEY_GOOGLE_CX = 'waynautic_google_search_cx';
+const STORAGE_KEY_APOLLO_API = 'waynautic_apollo_api_key';
+
+const DEFAULT_LEADS = [
+  {
+    id: 101,
+    name: "Prof. Rushikesh Pande",
+    headline: "Training and Placement Officer (TPO)",
+    college: "PCET's Nutan Maharashtra Institute of Engineering & Technology",
+    location: "Pune, Maharashtra",
+    phone: "9604356684",
+    email: "",
+    audience: "tpo",
+    linkedinUrl: "https://in.linkedin.com/in/rushikesh-pande-9650a914a",
+    pitchGenerated: "",
+    status: "Verified Lead"
+  },
+  {
+    id: 102,
+    name: "Dr. Sheetalkumar Rawandale",
+    headline: "Dean Industry Institute Interaction & Training and Placement Officer",
+    college: "Pimpri Chinchwad College of Engineering (PCCOE)",
+    location: "Pune, Maharashtra",
+    phone: "9158998226",
+    email: "",
+    audience: "tpo",
+    linkedinUrl: "https://in.linkedin.com/in/rawandale",
+    pitchGenerated: "",
+    status: "High Priority"
+  },
+  {
+    id: 103,
+    name: "Aditya Kulkarni",
+    headline: "B.Tech Computer Science (2025) | Aspiring AI Engineer",
+    college: "COEP Technological University",
+    location: "Pune, Maharashtra",
+    phone: "",
+    email: "",
+    audience: "student",
+    linkedinUrl: "https://in.linkedin.com/in/aditya-kulkarni-ai",
+    pitchGenerated: "",
+    status: "Student Candidate"
+  },
+  {
+    id: 104,
+    name: "Neha Deshmukh",
+    headline: "Final Year MCA (2025) | Python, RAG & Vector Databases",
+    college: "MIT World Peace University",
+    location: "Pune, Maharashtra",
+    phone: "",
+    email: "",
+    audience: "student",
+    linkedinUrl: "https://in.linkedin.com/in/neha-deshmukh-mca",
+    pitchGenerated: "",
+    status: "Student Candidate"
+  }
+];
 
 const WAYNAUTIC_BRAND_SYSTEM_PROMPT = `
 You are the Chief AI Growth & Curriculum Strategist for Waynautic Academy (academy.waynautic.com), working directly with Founder & Senior AI Architect Pramod Gogadare.

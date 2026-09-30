@@ -93,3 +93,87 @@ function updateGalleryCountBadges() {
     el.innerText = `${count}`;
   });
 }
+
+// ==========================================
+// Lead Radar & Apollo Pipeline Persistence
+// ==========================================
+
+function getSavedLeads() {
+  const data = localStorage.getItem(STORAGE_KEY_LEADS);
+  if (!data) {
+    saveLeadsToPipeline(DEFAULT_LEADS);
+    return DEFAULT_LEADS;
+  }
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    console.warn("Error parsing saved leads:", e);
+    return DEFAULT_LEADS;
+  }
+}
+
+function saveLeadsToPipeline(leads) {
+  try {
+    localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
+  } catch (err) {
+    console.error("Failed to save leads to localStorage:", err);
+  }
+}
+
+function addLeadsToPipeline(newLeads) {
+  const currentLeads = getSavedLeads();
+  let addedCount = 0;
+  newLeads.forEach(item => {
+    const exists = currentLeads.some(l => 
+      (l.linkedinUrl && item.linkedinUrl && l.linkedinUrl.toLowerCase() === item.linkedinUrl.toLowerCase()) ||
+      (l.name.toLowerCase() === item.name.toLowerCase() && (l.college || '').toLowerCase() === (item.college || '').toLowerCase())
+    );
+    if (!exists) {
+      currentLeads.unshift(item);
+      addedCount++;
+    }
+  });
+  saveLeadsToPipeline(currentLeads);
+  return { addedCount, total: currentLeads.length };
+}
+
+function updateLeadInPipeline(id, patch) {
+  const leads = getSavedLeads();
+  const idx = leads.findIndex(l => l.id == id);
+  if (idx !== -1) {
+    leads[idx] = { ...leads[idx], ...patch };
+    saveLeadsToPipeline(leads);
+    return leads[idx];
+  }
+  return null;
+}
+
+function deleteLeadFromPipeline(id) {
+  let leads = getSavedLeads();
+  leads = leads.filter(l => l.id != id);
+  saveLeadsToPipeline(leads);
+}
+
+function clearLeadsPipeline() {
+  localStorage.removeItem(STORAGE_KEY_LEADS);
+}
+
+function getGoogleApiCredentials() {
+  return {
+    apiKey: localStorage.getItem(STORAGE_KEY_GOOGLE_API) || '',
+    cx: localStorage.getItem(STORAGE_KEY_GOOGLE_CX) || ''
+  };
+}
+
+function saveGoogleApiCredentials(apiKey, cx) {
+  localStorage.setItem(STORAGE_KEY_GOOGLE_API, (apiKey || '').trim());
+  localStorage.setItem(STORAGE_KEY_GOOGLE_CX, (cx || '').trim());
+}
+
+function getApolloApiKey() {
+  return (localStorage.getItem(STORAGE_KEY_APOLLO_API) || '').trim();
+}
+
+function saveApolloApiKey(key) {
+  localStorage.setItem(STORAGE_KEY_APOLLO_API, (key || '').trim());
+}
