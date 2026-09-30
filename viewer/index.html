@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waynautic Academy — AI Marketing & Admissions Command Center</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              cream: '#FBF9F5',
+              navy: '#122443',
+              navylight: '#1E355B',
+              gold: '#D97706',
+              goldlight: '#F59E0B',
+              blue: '#2563EB',
+              accent: '#0284C7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+    .line-clamp-4 {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans bg-slate-50 text-slate-900 selection:bg-amber-200 selection:text-slate-900">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl font-bold flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none border border-slate-700">
+    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
+
+  <!-- Top Header & API Key Bar -->
+  <header class="border-b border-slate-200 bg-white/95 backdrop-blur sticky top-0 z-40 px-6 py-3.5 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center font-black text-white text-xl shadow-md shadow-blue-500/20">
+          W
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-black text-lg text-slate-900 tracking-tight">WAYNAUTIC ACADEMY</span>
+            <span class="text-[11px] bg-amber-50 text-amber-700 border border-amber-300 px-2.5 py-0.5 rounded-full font-bold">🏆 2025 Award Winner</span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium">AI Outreach, Growth & Admissions Command Center</p>
+        </div>
+      </div>
+
+      <!-- Google Gemini API Key Bar -->
+      <div class="flex items-center gap-2.5 bg-slate-100 border border-slate-200 p-1.5 px-3 rounded-xl">
+        <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Gemini API:</span>
+        </div>
+        <div class="relative flex items-center">
+          <input type="password" id="api-key-input" placeholder="Enter Gemini API Key..." class="bg-white border border-slate-300 text-xs text-slate-900 px-3 py-1.5 rounded-lg w-52 focus:outline-none focus:border-blue-500 font-mono tracking-wider shadow-inner" value="" onchange="saveApiKey()" />
+          <button onclick="toggleApiKeyVisibility()" class="absolute right-2 text-slate-400 hover:text-slate-700 text-xs">👁️</button>
+        </div>
+        <button onclick="testApiKey()" id="test-api-btn" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm">
+          Test Key
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs (Bright Style) -->
+  <nav class="bg-white border-b border-slate-200 px-6">
+    <div class="max-w-7xl mx-auto flex space-x-1.5 overflow-x-auto py-2.5 custom-scrollbar">
+      <button onclick="switchTab('topic-hub')" id="tab-btn-topic-hub" class="nav-tab active-tab px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap bg-blue-600 text-white shadow-md shadow-blue-500/20 transition">
+        <span>🏠 Home & Title Engine</span>
+        <span class="text-[10px] bg-white/25 px-1.5 py-0.5 rounded font-mono">Wireframe 2</span>
+      </button>
+      <button onclick="switchTab('flyers')" id="tab-btn-flyers" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2 whitespace-nowrap">
+        <span>🖼️ WhatsApp Flyers (Image Studio)</span>
+        <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded font-mono">Prompt Engine</span>
+      </button>
+      <button onclick="switchTab('whatsapp')" id="tab-btn-whatsapp" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2 whitespace-nowrap">
+        <span>💬 WhatsApp Broadcasts</span>
+      </button>
+      <button onclick="switchTab('linkedin')" id="tab-btn-linkedin" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2 whitespace-nowrap">
+        <span>💼 LinkedIn Posts</span>
+      </button>
+      <button onclick="switchTab('playbooks')" id="tab-btn-playbooks" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-2 whitespace-nowrap">
+        <span>📅 Calendar & Playbooks</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6">
+
+    <!-- ============================================================== -->
+    <!-- TAB 1: HOME PAGE & TITLE GENERATOR (IMAGE 2 WIREFRAME LAYOUT)   -->
+    <!-- ============================================================== -->
+    <section id="tab-topic-hub" class="tab-content space-y-6">
+
+      <!-- Top Summary / Action Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 px-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        <div>
+          <h1 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <span>Campaign Title & 4-Category Engine</span>
+            <span class="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-mono font-bold">Image 2 Layout</span>
+          </h1>
+          <p class="text-xs text-slate-500 mt-1">
+            Select any title on the left to inspect its 4 correlated categories. Click <strong>Generate Title Button</strong> to create a new campaign on-demand.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="openCreateTitleModal()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-2">
+            <span class="text-base leading-none font-black">＋</span>
+            <span>Generate Title</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Split Layout (Left Sidebar + Right 4-Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT SIDEBAR: Titles List & Full View Button -->
+        <div class="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col h-[700px]">
+          <!-- Generate Title Top Button -->
+          <button onclick="openCreateTitleModal()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs shadow-md shadow-blue-600/20 transition flex items-center justify-center gap-2 mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+            <span>Generate Title Button</span>
+          </button>
+
+          <!-- Title Header & Count -->
+          <div class="flex items-center justify-between px-1 mb-2">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">All Titles One by One</span>
+            <span id="title-count-badge" class="text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-bold">5 Titles</span>
+          </div>
+
+          <!-- Titles Scrollable Container -->
+          <div id="titles-sidebar-list" class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+          <!-- Bottom: Full Title View Button -->
+          <div class="pt-4 border-t border-slate-200 mt-3">
+            <button onclick="openFullTitleViewModal()" class="w-full py-2.5 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-xs transition flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+              <span>Full Title View Button</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT MAIN AREA: 4 Columns Representing Each Category -->
+        <div class="lg:col-span-8 space-y-4">
+          <div class="flex items-center justify-between px-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500 font-semibold">Active Campaign:</span>
+              <span id="active-title-label" class="text-sm font-extrabold text-blue-700">1. Flagship 4-Week Cohort</span>
+            </div>
+            <span class="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">4-Category Co-Related</span>
+          </div>
+
+          <!-- 4-Column Grid (Bright Cards) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 h-[650px]">
+
+            <!-- Column 1: WhatsApp Flyer -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between h-full">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-base">🖼️</span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">WhatsApp Flyer</h3>
+                  </div>
+                  <span id="status-badge-flyer" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Ready</span>
+                </div>
+
+                <div id="col-flyer-preview" class="rounded-xl overflow-hidden border border-slate-200 bg-slate-50 p-2 flex flex-col items-center justify-center min-h-[160px]">
+                  <img id="col-flyer-img" src="assets/flyer_sample_reference.png" alt="Flyer Preview" class="max-h-36 rounded shadow object-contain" />
+                </div>
+
+                <div class="space-y-1">
+                  <div class="text-[11px] font-bold text-amber-800">Flyer Angle & Headline:</div>
+                  <p id="col-flyer-text" class="text-xs text-slate-700 leading-relaxed line-clamp-4 font-medium">
+                    56 Topics, 4-5 Agentic Projects, Dedicated 1-on-1 Mentor, 3-Month Industry Internship & Dual Certificate.
+                  </p>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 mt-3 flex items-center gap-2">
+                <button onclick="copyColText('col-flyer-text')" class="flex-1 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition">Copy Angle</button>
+                <button onclick="openFullscreenFlyer()" class="p-1.5 px-2.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs transition" title="Preview Flyer Template">👁️</button>
+              </div>
+            </div>
+
+            <!-- Column 2: WhatsApp Broadcast -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between h-full">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-base">💬</span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">WhatsApp Copy</h3>
+                  </div>
+                  <span id="status-badge-wa" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Ready</span>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="text-[11px] font-bold text-emerald-800">Broadcast Message:</div>
+                  <div id="col-wa-text" class="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 h-[380px] overflow-y-auto custom-scrollbar font-sans font-normal">
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 mt-3">
+                <button onclick="copyColText('col-wa-text')" class="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5">
+                  <span>Copy Broadcast</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Column 3: LinkedIn Post -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between h-full">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-base">💼</span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">LinkedIn Post</h3>
+                  </div>
+                  <span id="status-badge-li" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Ready</span>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="text-[11px] font-bold text-blue-800">Post Hook & Body:</div>
+                  <div id="col-li-text" class="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 h-[380px] overflow-y-auto custom-scrollbar font-sans font-normal">
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 mt-3">
+                <button onclick="copyColText('col-li-text')" class="w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5">
+                  <span>Copy Post</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Column 4: Playbook & Script -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between h-full">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-base">🎯</span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Conversion Script</h3>
+                  </div>
+                  <span id="status-badge-pb" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Ready</span>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="text-[11px] font-bold text-purple-800">Inbound DM / Call Action:</div>
+                  <div id="col-pb-text" class="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 h-[380px] overflow-y-auto custom-scrollbar font-sans font-normal">
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 mt-3">
+                <button onclick="copyColText('col-pb-text')" class="w-full py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5">
+                  <span>Copy Script</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 2: WHATSAPP FLYERS (WITH FULL IMAGE PROMPT GENERATOR)      -->
+    <!-- ============================================================== -->
+    <section id="tab-flyers" class="tab-content hidden space-y-6">
+
+      <!-- HTML FLYER GENERATOR -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 rounded-lg bg-amber-100 text-amber-700">🎨</span>
+            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">HTML Flyer Generator</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2.5 py-0.5 rounded-full">Pixel-Perfect • Matching Reference Design</span>
+          </div>
+        </div>
+
+        <!-- Prompt Input -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Describe the flyer topic, audience, or angle:</label>
+          <textarea id="gen-flyer-prompt" rows="3" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-blue-500 font-sans shadow-inner" placeholder="e.g. 'Flyer for 4-week AI Engineering cohort targeting working professionals — emphasize 3-Month Internship, RAG/MCP curriculum, 1-on-1 mentorship'"></textarea>
+        </div>
+
+        <!-- Action Row -->
+        <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200">
+          <button onclick="runFlyerContentGeneration()" id="btn-gen-flyers" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2">
+            <span>✨ Generate Flyer</span>
+          </button>
+          <button onclick="retryGeneration('flyers')" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs transition">
+            🔄 Retry
+          </button>
+          <button onclick="openFlyerFullscreen()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+            <span>↗ Open Full-Size & Download</span>
+          </button>
+          <button onclick="saveGeneration('flyers')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Flyer Preview -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT: Live Flyer Render -->
+        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Live Flyer Preview</span>
+            <span id="flyer-gen-status" class="text-xs text-slate-400 font-mono">Ready</span>
+          </div>
+          <div id="flyer-preview-wrapper" class="w-full rounded-xl overflow-hidden border border-slate-200 bg-[#e5e5e5] flex items-start justify-center" style="min-height: 500px;">
+            <iframe id="flyer-preview-iframe" style="width: 560px; height: 900px; border: none; transform-origin: top center; pointer-events: none;" srcdoc=""></iframe>
+          </div>
+        </div>
+
+        <!-- RIGHT: Reference + Controls -->
+        <div class="lg:col-span-5 space-y-4">
+
+          <!-- Reference Flyer -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col items-center">
+            <div class="w-full flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">Reference Design</span>
+              <span class="text-xs text-slate-500 font-mono">4:5 Poster</span>
+            </div>
+            <div class="w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-100 p-2 flex items-center justify-center">
+              <img src="assets/flyer_sample_reference.png" alt="Reference Flyer" class="max-h-[360px] w-auto object-contain rounded-lg shadow-md" />
+            </div>
+          </div>
+
+          <!-- Generated Content JSON (editable) -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Generated Content (Editable)</span>
+              <button onclick="applyFlyerEdits()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] transition">Apply Edits</button>
+            </div>
+            <textarea id="flyer-content-editor" rows="12" class="w-full bg-slate-50 border border-slate-300 text-[11px] text-slate-900 p-3 rounded-xl focus:outline-none focus:border-blue-500 font-mono shadow-inner leading-relaxed" placeholder="AI-generated flyer content will appear here as JSON. You can edit any field and click 'Apply Edits' to update the preview."></textarea>
+          </div>
+
+          <!-- Color Palette Tokens -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <h3 class="text-xs font-bold text-slate-900 mb-2">Brand Color Palette</h3>
+            <div class="flex flex-wrap gap-2 text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-[#F4EFEB] text-slate-900 font-mono font-bold border border-slate-300">#F4EFEB Cream</span>
+              <span class="px-2.5 py-1 rounded-lg bg-[#152542] text-white font-mono font-bold">#152542 Navy</span>
+              <span class="px-2.5 py-1 rounded-lg bg-[#E0A656] text-slate-900 font-mono font-bold">#E0A656 Gold</span>
+              <span class="px-2.5 py-1 rounded-lg bg-[#0ea5e9] text-white font-mono font-bold">#0EA5E9 Cyan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 3: WHATSAPP BROADCASTS (WITH DYNAMIC MARKETING ANGLES)     -->
+    <!-- ============================================================== -->
+    <section id="tab-whatsapp" class="tab-content hidden space-y-6">
+
+      <!-- IMAGE 1 WIREFRAME: AI GENERATOR WIDGET WITH DYNAMIC ANGLE SELECTOR -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">💬</span>
+            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Dynamic WhatsApp Broadcast Generator (Wireframe 1)</h2>
+          </div>
+          <!-- Dynamic Marketing Angle Selector -->
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold text-slate-600">Marketing Angle:</label>
+            <select id="wa-angle-select" class="text-xs bg-slate-50 border border-slate-300 text-slate-800 p-1.5 px-2.5 rounded-lg focus:outline-none focus:border-emerald-500 font-semibold shadow-sm">
+              <option value="auto">🎲 Auto-Rotate Creative Angle</option>
+              <option value="internship">💼 Guaranteed 3-Month Internship & Dual Cert</option>
+              <option value="contrarian">⚡ Contrarian Reality (Why 90% Fail at RAG)</option>
+              <option value="story">🚀 Student Transformation (Tutorial Hell Escape)</option>
+              <option value="webinar">🎟️ ₹19 Live Masterclass Flash Invite</option>
+              <option value="free">🎁 100% Free 1-on-1 Career Consultation</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Text edit box from user for prompt generation:</label>
+          <textarea id="gen-wa-prompt" rows="3" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-emerald-500 font-sans shadow-inner" placeholder="Enter instructions for WhatsApp message... (e.g. 'Generate an AI training WhatsApp broadcast message for new 28 day training course for working professionals')"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <div class="lg:col-span-10">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Generated text / image:</label>
+            <div id="gen-wa-output" class="bg-slate-50 border border-slate-300 rounded-xl p-4 min-h-[160px] max-h-[300px] overflow-y-auto text-xs text-slate-800 whitespace-pre-wrap custom-scrollbar shadow-inner leading-relaxed">
+              <span class="text-slate-400 italic">Generated Waynautic WhatsApp copy will appear here...</span>
+            </div>
+          </div>
+          <div class="lg:col-span-2 flex flex-col justify-center items-center">
+            <button onclick="retryGeneration('wa')" class="w-full py-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-emerald-800 border border-slate-300 font-bold text-xs transition shadow-sm flex flex-col items-center justify-center gap-1">
+              <span class="text-lg">🔄</span>
+              <span>Retry</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200 gap-4">
+          <button onclick="discardGeneration('wa')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition border border-slate-300">
+            Discard
+          </button>
+          <button onclick="runAiGeneration('wa')" id="btn-gen-wa" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition">
+            Generate Button
+          </button>
+          <button onclick="saveGeneration('wa')" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing / Saved WhatsApp Messages -->
+      <div id="wa-messages-container" class="space-y-4">
+        <!-- Dynamically rendered -->
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 4: LINKEDIN POSTS (WITH DYNAMIC MARKETING ANGLES)          -->
+    <!-- ============================================================== -->
+    <section id="tab-linkedin" class="tab-content hidden space-y-6">
+
+      <!-- IMAGE 1 WIREFRAME: AI GENERATOR WIDGET -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 rounded-lg bg-blue-100 text-blue-800">💼</span>
+            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Dynamic LinkedIn Post Generator (Wireframe 1)</h2>
+          </div>
+          <!-- Dynamic Angle Selector -->
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold text-slate-600">Post Angle:</label>
+            <select id="li-angle-select" class="text-xs bg-slate-50 border border-slate-300 text-slate-800 p-1.5 px-2.5 rounded-lg focus:outline-none focus:border-blue-500 font-semibold shadow-sm">
+              <option value="auto">🎲 Auto-Rotate Angle</option>
+              <option value="tech">🧠 RAG Architecture & Vector Index Deep Dive</option>
+              <option value="lead">📄 Comment 'ROADMAP' Viral Lead Magnet</option>
+              <option value="story">🚀 Student Case Study & 1-on-1 Mentorship</option>
+              <option value="award">🏆 2025 GenAI Award Winner Enterprise Authority</option>
+              <option value="hot_take">🔥 Contrarian Take: Prompt Engineering is Dead</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Text edit box from user for prompt generation:</label>
+          <textarea id="gen-li-prompt" rows="3" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-blue-500 font-sans shadow-inner" placeholder="Enter instructions for LinkedIn post... (e.g. 'Write a high-reach post for developers explaining why calling basic OpenAI APIs is not enough and why companies need engineers who master RAG and MCP')"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <div class="lg:col-span-10">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Generated text / image:</label>
+            <div id="gen-li-output" class="bg-slate-50 border border-slate-300 rounded-xl p-4 min-h-[160px] max-h-[300px] overflow-y-auto text-xs text-slate-800 whitespace-pre-wrap custom-scrollbar shadow-inner leading-relaxed">
+              <span class="text-slate-400 italic">Generated LinkedIn post will appear here...</span>
+            </div>
+          </div>
+          <div class="lg:col-span-2 flex flex-col justify-center items-center">
+            <button onclick="retryGeneration('li')" class="w-full py-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-blue-800 border border-slate-300 font-bold text-xs transition shadow-sm flex flex-col items-center justify-center gap-1">
+              <span class="text-lg">🔄</span>
+              <span>Retry</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200 gap-4">
+          <button onclick="discardGeneration('li')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition border border-slate-300">
+            Discard
+          </button>
+          <button onclick="runAiGeneration('li')" id="btn-gen-li" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-600/20 transition">
+            Generate Button
+          </button>
+          <button onclick="saveGeneration('li')" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing / Saved LinkedIn Posts -->
+      <div id="li-posts-container" class="space-y-4">
+        <!-- Dynamically rendered -->
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 5: CALENDAR & PLAYBOOKS                                    -->
+    <!-- ============================================================== -->
+    <section id="tab-playbooks" class="tab-content hidden space-y-6">
+
+      <!-- IMAGE 1 WIREFRAME: AI GENERATOR WIDGET FOR SCRIPTS -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 rounded-lg bg-purple-100 text-purple-800">🎯</span>
+            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Playbook & Objection Script Generator (Wireframe 1)</h2>
+          </div>
+          <span class="text-xs text-purple-700 font-mono font-bold">Waynautic Objection Handler</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Text edit box from user for prompt generation:</label>
+          <textarea id="gen-pb-prompt" rows="3" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-purple-500 font-sans shadow-inner" placeholder="Enter objection or scenario... (e.g. 'How to respond to a student asking if they can pay fees in installments or if internship is guaranteed')"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <div class="lg:col-span-10">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Generated text / image:</label>
+            <div id="gen-pb-output" class="bg-slate-50 border border-slate-300 rounded-xl p-4 min-h-[140px] max-h-[250px] overflow-y-auto text-xs text-slate-800 whitespace-pre-wrap custom-scrollbar shadow-inner leading-relaxed">
+              <span class="text-slate-400 italic">Generated qualification script will appear here...</span>
+            </div>
+          </div>
+          <div class="lg:col-span-2 flex flex-col justify-center items-center">
+            <button onclick="retryGeneration('pb')" class="w-full py-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-purple-800 border border-slate-300 font-bold text-xs transition shadow-sm flex flex-col items-center justify-center gap-1">
+              <span class="text-lg">🔄</span>
+              <span>Retry</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200 gap-4">
+          <button onclick="discardGeneration('pb')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition border border-slate-300">
+            Discard
+          </button>
+          <button onclick="runAiGeneration('pb')" id="btn-gen-pb" class="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs shadow-md shadow-purple-600/20 transition">
+            Generate Button
+          </button>
+          <button onclick="saveGeneration('pb')" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- Calendar & Lead Scripts Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 class="text-sm font-bold text-slate-900">Weekly Posting Rhythm (IST)</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left text-slate-700 border-collapse">
+              <thead class="bg-slate-100 text-slate-800 uppercase font-semibold">
+                <tr>
+                  <th class="p-3 rounded-l-lg">Day</th>
+                  <th class="p-3">LinkedIn Morning</th>
+                  <th class="p-3 rounded-r-lg">WhatsApp Distribution</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-blue-700">Mon</td><td class="p-3">RAG Deep Dive / Tips</td><td class="p-3">Student Groups (Internship Hook)</td></tr>
+                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-blue-700">Tue</td><td class="p-3">Mentorship / Student Story</td><td class="p-3">Developer Groups (Upskilling)</td></tr>
+                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-blue-700">Wed</td><td class="p-3">Contrarian Tech Trend</td><td class="p-3">Broadcast List: Free Cheatsheet</td></tr>
+                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-blue-700">Thu</td><td class="p-3">Award / Behind-The-Scenes</td><td class="p-3">Flash Drop: ₹19 Live Webinar</td></tr>
+                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-blue-700">Fri</td><td class="p-3 font-semibold text-amber-700">Lead Magnet ("ROADMAP")</td><td class="p-3">Follow-up Sequences for Inquiries</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
+          <h3 class="text-sm font-bold text-slate-900">Inbound Lead Qualification Flow</h3>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+            <span class="text-amber-800 font-bold block mb-1">Step 1: Diagnostic Greeting</span>
+            <p class="text-slate-700">"Hi [Name]! Thanks for reaching out. Are you studying or working? Have you built anything in Python/AI yet?"</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+            <span class="text-emerald-800 font-bold block mb-1">Step 2: Low-Friction Offer Choice</span>
+            <p class="text-slate-700">"Option 1: 100% Free 1-on-1 AI Career Consultation (15 Mins via Meet).<br>Option 2: ₹19 Live Masterclass Webinar.<br>Which one works best?"</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+            <span class="text-blue-800 font-bold block mb-1">Step 3: Closing into Flagship Cohort</span>
+            <p class="text-slate-700">"For verifiable job experience: our 4-Week Cohort includes 56 topics, 1-on-1 mentor, 4-5 projects + guaranteed 3-Month Industry Internship for ₹9,999."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: GENERATE NEW TITLE WITH SELECTIVE CATEGORY TICK BOXES   -->
+  <!-- ============================================================== -->
+  <div id="create-title-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <span>✨ Generate New Campaign Title</span>
+          </h3>
+          <p class="text-xs text-slate-500">Insert full prompt or idea and select categories to generate.</p>
+        </div>
+        <button onclick="closeCreateTitleModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Campaign Title / Theme Name:</label>
+        <input type="text" id="modal-title-name" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-blue-500 font-semibold shadow-inner" placeholder="e.g. 28-Day AI Engineering Sprint for Developers" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Full Prompt / Idea Details:</label>
+        <textarea id="modal-title-prompt" rows="3" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-blue-500 font-sans shadow-inner" placeholder="Explain the angle, offer, target audience, and key highlights... (e.g. 'Target working software engineers with 28-day intensive training in RAG and Agentic AI with weekend 1-on-1 mentorship and 3-month internship option')"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-2">Options for Each Category (Tick Box):</label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 cursor-pointer">
+            <input type="checkbox" id="chk-flyer" checked class="w-4 h-4 rounded text-amber-500 focus:ring-0" />
+            <span class="text-xs font-semibold text-slate-800">1. WhatsApp Flyer</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 cursor-pointer">
+            <input type="checkbox" id="chk-wa" checked class="w-4 h-4 rounded text-emerald-500 focus:ring-0" />
+            <span class="text-xs font-semibold text-slate-800">2. WhatsApp Broadcast</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 cursor-pointer">
+            <input type="checkbox" id="chk-li" checked class="w-4 h-4 rounded text-blue-500 focus:ring-0" />
+            <span class="text-xs font-semibold text-slate-800">3. LinkedIn Post</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 cursor-pointer">
+            <input type="checkbox" id="chk-pb" checked class="w-4 h-4 rounded text-purple-500 focus:ring-0" />
+            <span class="text-xs font-semibold text-slate-800">4. Playbook & Script</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+        <button onclick="closeCreateTitleModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800">Cancel</button>
+        <button onclick="submitCreateTitle()" id="btn-submit-title" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-2">
+          <span>Generate Selected Categories</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: FULL TITLE VIEW MODE (WITH DELETE BUTTONS FOR EACH ITEM) -->
+  <!-- ============================================================== -->
+  <div id="full-view-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="p-5 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-amber-700 font-bold uppercase tracking-wider">Full Title Detailed View</span>
+            <span class="text-slate-400">•</span>
+            <span class="text-xs text-slate-500">On-demand generation & item deletion</span>
+          </div>
+          <h2 id="full-modal-title" class="text-lg font-extrabold text-slate-900 mt-0.5">Campaign Name</h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="deleteCurrentCampaignTitle()" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold transition flex items-center gap-1.5">
+            <span>🗑️ Delete Entire Title</span>
+          </button>
+          <button onclick="closeFullTitleViewModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold px-2">✕</button>
+        </div>
+      </div>
+
+      <!-- Modal Body (4 Categories with Dedicated Delete Buttons) -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white">
+
+        <!-- Category 1: WhatsApp Flyer -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🖼️</span>
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">1. WhatsApp Flyer</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="generateCategoryOnDemand('flyer')" class="text-xs px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition">
+                ⚡ Generate on Demand
+              </button>
+              <button onclick="deleteCategoryAsset('flyer')" class="text-xs px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-semibold transition flex items-center gap-1">
+                <span>🗑️ Delete</span>
+              </button>
+            </div>
+          </div>
+          <div id="full-modal-flyer-content" class="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed"></div>
+        </div>
+
+        <!-- Category 2: WhatsApp Broadcast Copy -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="text-base">💬</span>
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">2. WhatsApp Broadcast Message</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="generateCategoryOnDemand('wa')" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 font-semibold transition">
+                ⚡ Generate on Demand
+              </button>
+              <button onclick="deleteCategoryAsset('wa')" class="text-xs px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-semibold transition flex items-center gap-1">
+                <span>🗑️ Delete</span>
+              </button>
+            </div>
+          </div>
+          <pre id="full-modal-wa-content" class="bg-white p-4 rounded-xl text-xs text-slate-800 whitespace-pre-wrap leading-relaxed border border-slate-200 font-sans shadow-sm"></pre>
+        </div>
+
+        <!-- Category 3: LinkedIn Post -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="text-base">💼</span>
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">3. LinkedIn Text Post</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="generateCategoryOnDemand('li')" class="text-xs px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold transition">
+                ⚡ Generate on Demand
+              </button>
+              <button onclick="deleteCategoryAsset('li')" class="text-xs px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-semibold transition flex items-center gap-1">
+                <span>🗑️ Delete</span>
+              </button>
+            </div>
+          </div>
+          <pre id="full-modal-li-content" class="bg-white p-4 rounded-xl text-xs text-slate-800 whitespace-pre-wrap leading-relaxed border border-slate-200 font-sans shadow-sm"></pre>
+        </div>
+
+        <!-- Category 4: Playbook & Conversion Script -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🎯</span>
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">4. Conversion Script & Playbook</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="generateCategoryOnDemand('pb')" class="text-xs px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 font-semibold transition">
+                ⚡ Generate on Demand
+              </button>
+              <button onclick="deleteCategoryAsset('pb')" class="text-xs px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-semibold transition flex items-center gap-1">
+                <span>🗑️ Delete</span>
+              </button>
+            </div>
+          </div>
+          <pre id="full-modal-pb-content" class="bg-white p-4 rounded-xl text-xs text-slate-800 whitespace-pre-wrap leading-relaxed border border-slate-200 font-sans shadow-sm"></pre>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 px-6 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+        <span class="text-xs text-slate-500">All modifications are preserved in your local browser storage.</span>
+        <button onclick="closeFullTitleViewModal()" class="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition">
+          Close View
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500 bg-white">
+    Waynautic Academy Outreach Command Center • Dynamic Brand Grounding • Powered by Google Gemini • <a href="https://academy.waynautic.com/" target="_blank" class="text-blue-600 hover:underline">academy.waynautic.com</a>
+  </footer>
+
+  <!-- Application Logic with Dynamic Brand Grounding & Full Image Prompt Engine -->
+  <script>
+    const STORAGE_KEY_DB = 'waynautic_outreach_db_bright';
+    const STORAGE_KEY_API = 'waynautic_gemini_api_key';
+
+    // IMMUTABLE BRAND GROUNDING KNOWLEDGE BASE
+    const WAYNAUTIC_BRAND_SYSTEM_PROMPT = `
+You are the Chief Growth & Marketing Copywriter for WAYNAUTIC ACADEMY (academy.waynautic.com).
+
+CRITICAL BRAND IDENTITY & GROUNDING RULES:
+1. WHAT WAYNAUTIC ACADEMY IS:
+   - High-depth, production-grade Software & AI Engineering training for software developers, programmers, CS students, and tech professionals.
+   - Core Technologies: Python, Git Version Control, Vector Databases (Pinecone, Chroma, Qdrant), RAG (Retrieval-Augmented Generation), Model Context Protocol (MCP), Local AI Deployment (Ollama, vLLM, open weights), and Autonomous Agentic AI Workflows.
+   
+2. STRICT NEGATIVE RULES (NEVER VIOLATE):
+   - NEVER say "No Coding Required" or "Non-technical AI tools".
+   - NEVER mention generic tools like Zapier, ChatGPT prompt whispering, copywriting prompts, or automating emails.
+   - Waynautic teaches REAL CODING, system architecture, token economics, and engineering guardrails.
+
+3. CORE VALUE PROPOSITION & OFFERS:
+   - Offer 1 (Flagship Masterclass): 4-Week AI Intensive Cohort + 3-MONTH INDUSTRY INTERNSHIP right after training + Dual Certification (Verifiable Internship Certificate + Program Completion) + 1-on-1 Dedicated Senior Mentor + 4–5 Agentic Portfolio Projects. Fee: ₹9,999 (incl. 18% GST, originally ₹20,000).
+   - Offer 2 (Tripwire Hook): ₹19 Live AI Masterclass Webinar (90-min hands-on code-along building a RAG agent from scratch + resume/portfolio audit).
+   - Offer 3 (Zero-Friction Magnet): 100% Free 1-on-1 AI Career Consultation & Personalized Roadmap (15 mins via Google Meet with Pramod Gogadare).
+
+4. CREDIBILITY & CONTACT:
+   - Award: Winner of "Best AI/ML Testing Strategy 2025" at the GenAI and ML Awards (https://lnkd.in/p/dPmtiGUF).
+   - Official Contact: Pramod Gogadare — +91 9158998226 | academy.waynautic.com.
+
+5. CREATIVE DIVERSITY MANDATE:
+   - Vary your opening hook, sentence length, and vocabulary on every generation.
+   - Use punchy, modern formatting with emojis, bolding, and bullet points. Never be generic or robotic.
+`;
+
+    // Default Pre-built Titles
+    const defaultCampaigns = [
+      {
+        id: 1,
+        title: "1. 4-Week Cohort + 3-Month Internship (Flagship)",
+        prompt: "4-Week Cohort with 56 topics, 1-on-1 dedicated mentor, 4-5 agentic AI projects, and guaranteed 3-Month Industry Internship with Dual Certification.",
+        flyer: "Flagship Visual Flyer: 56 Topics, 4 Weeks, 4-5 Agentic Projects, Dedicated 1-on-1 Mentor, 3-Month Industry Internship & Dual Certificate.",
+        flyerImage: "assets/flyer_sample_reference.png",
+        wa: `🎓 *Tired of basic YouTube tutorials that don't get you hired?*
+
+Most engineering graduates have "basic Python" or "Titanic dataset" on their resume — and recruiters skip right past them.
+
+To crack modern tech jobs, you need to showcase *production-grade Generative AI, Vector Databases, and Agentic Systems.*
+
+At *Waynautic Academy*, we're opening our next 4-Week AI Intensive Cohort:
+
+🔥 *Why this stands out for students:*
+✅ *4 Weeks Structured AI Training*: From zero to production-grade AI.
+✅ *4–5 Agentic Portfolio Projects*: Live GitHub repos you can actually demo in interviews.
+✅ *3-Month Industry Internship*: Real hands-on experience directly following your 4-week training.
+✅ *Dual Certification*: Program Completion + Verifiable 3-Month Industry Internship Certificate.
+✅ *1-on-1 Dedicated Mentor*: Real code reviews and weekly doubt clearance.
+
+🏆 *Credibility:* Winner of the *Best AI/ML Testing Strategy 2025* at the GenAI and ML Awards.
+
+👉 *Book your Free 1-on-1 Consultation & AI Career Roadmap:*
+https://wa.me/919158998226?text=Hi%20Pramod,%20I%20am%20a%20student%20and%20want%20to%20know%20about%20the%20AI%20Training%20%2B%203-Month%20Internship
+
+📞 Contact: Pramod Gogadare — +91 9158998226
+🌐 Website: https://academy.waynautic.com/`,
+        li: `"I completed three 20-hour courses on Udemy, but when asked in an interview to architect a basic multi-agent system, I froze."
+
+A student shared this with me during our 1-on-1 onboarding session last week.
+
+Watching someone else write code produces the illusion of competence. You feel like you're learning, but your brain hasn't wrestled with a single cryptic stack trace or rate limit error.
+
+When we designed Waynautic Academy, we made a radical decision:
+No passive lectures. No massive 100-person Zoom calls.
+
+Instead:
+1. Every student is paired with a dedicated 1-on-1 mentor.
+2. You write the code, diagnose real edge cases, and refactor PRs.
+3. You build 4–5 agentic AI portfolio projects.
+4. Transition straight into a 3-Month Industry Internship.
+
+👉 Book a free 15-minute roadmap call with us: https://wa.me/919158998226?text=Hi%20Pramod,%20I%20want%20to%20break%20out%20of%20tutorial%20hell`,
+        pb: `"If you want verifiable job experience: our 4-Week Cohort includes 56 topics, 1-on-1 mentor, 4-5 projects + guaranteed 3-Month Industry Internship with Dual Certificates for ₹9,999 (incl. GST). Regular fee is ₹20,000. Would you like to review the syllabus or jump on a quick 10-minute call?"`
+      },
+      {
+        id: 2,
+        title: "2. ₹19 Live AI Masterclass Webinar (Impulse Hook)",
+        prompt: "90-minute live interactive masterclass for ₹19. Build an agentic RAG assistant live, resume audit, participation certificate.",
+        flyer: "₹19 Flash Offer Badge: 90 Minutes Live Code-Along, RAG Assistant Build, 1-on-1 Career Roadmap credit.",
+        flyerImage: "assets/flyer_sample_reference.png",
+        wa: `⚡ *FLASH ANNOUNCEMENT: Live Interactive AI Masterclass for just ₹19!*
+
+Tired of generic AI hype? Join our exclusive live hands-on masterclass with the engineering team at *Waynautic Academy*.
+
+🎟️ *Regular Price: ₹499*
+🔥 *Introductory Price: ₹19 ONLY* (First 50 registrations)
+
+🕒 *What you will experience in 90 Minutes:*
+🔹 Live Code Along: Build a real RAG-powered AI Assistant from scratch
+🔹 How top tech firms evaluate AI developer candidates in 2026
+🔹 Understand Autonomous Agents, MCP Protocol & Vector Databases
+🔹 Live Q&A and Portfolio/Resume tips with senior AI mentors
+🔹 *Bonus:* Certificate of Participation + 2026 AI Roadmap PDF included!
+
+👉 *Reserve your seat now for just ₹19:*
+https://wa.me/919158998226?text=Hi%20Pramod,%20I%20want%20to%20register%20for%20the%20Live%20AI%20Webinar%20for%20Rs%2019`,
+        li: `Most AI webinars are 10 minutes of theory followed by 50 minutes of sales pitches.
+
+We decided to do something completely different.
+
+This weekend, Waynautic Academy is hosting an interactive 90-Minute Live AI Engineering Masterclass:
+• Live code-along: Building an Agentic RAG assistant from scratch
+• Deconstructing real tech interview questions for AI roles in 2026
+• Live 1-on-1 resume and project critique session
+• Certificate of Participation + Complete Source Code repo
+
+Original Ticket Price: ₹499.
+Introductory Community Pass: Just ₹19.
+
+👉 Comment "WEBINAR" or drop a quick DM, and I'll send you the direct registration link!`,
+        pb: `"Hey! The ₹19 webinar gives you 90 mins of live coding where we build an AI agent from scratch. Here is the direct registration link: https://academy.waynautic.com/ or pay ₹19 directly via UPI to 9158998226 to book your slot!"`
+      },
+      {
+        id: 3,
+        title: "3. Free 1-on-1 AI Career Consultation (Zero Friction)",
+        prompt: "100% Free 15-Minute Strategy Call with Pramod Gogadare. Skill gap analysis, custom curriculum roadmap, resume review.",
+        flyer: "100% Free 15-Minute Strategy Session: Personalized AI Learning Roadmap, Resume Review, Career Guidance.",
+        flyerImage: "assets/flyer_sample_reference.png",
+        wa: `👋 *Want an honest review of your AI career roadmap?*
+
+Navigating the AI landscape can be overwhelming — should you learn PyTorch, LangChain, LlamaIndex, fine-tuning, or RAG? What about agentic workflows?
+
+To help you get clarity, *Waynautic Academy* is offering a limited number of *Free 1-on-1 AI Career Consultation Sessions (15 Mins)* this week.
+
+🎯 *What we do during this session:*
+1. Assess your current programming skills (Python, JavaScript, etc.)
+2. Map out a personalized 30-day learning curriculum tailored to your goals
+3. Review your resume to identify missing AI keywords & projects
+
+👉 *Claim your free slot today:*
+https://wa.me/919158998226?text=Hi%20Pramod,%20I'd%20like%20to%20schedule%20my%20Free%201-on-1%20AI%20Roadmap%20Session`,
+        li: `The gap between a junior developer and a high-earning AI Engineer comes down to mastering 5 distinct pillars:
+1. Token Economics & Provider APIs
+2. Hybrid Semantic Retrieval
+3. Model Context Protocol (MCP) & Standardized Tool Calling
+4. Agentic Control Loops & State Persistence
+5. Evaluation & Guardrail Frameworks
+
+We've compiled this into "The Complete 2026 AI Engineering Roadmap". Want a copy? Comment "ROADMAP" below!`,
+        pb: `"Hey [Name], thanks for reaching out! I just sent you the 2026 AI Roadmap. We also have 3 free slots open this Thursday for a 15-minute 1-on-1 session to map out your transition plan. Shall I block one for you?"`
+      },
+      {
+        id: 4,
+        title: "4. GenAI Award 2025 Winner & Credibility (Authority)",
+        prompt: "Winner of Best AI/ML Testing Strategy 2025 at the GenAI & ML Awards. Learn enterprise engineering standards.",
+        flyer: "Award Winner Badge: Best AI/ML Testing Strategy 2025. Enterprise rigor, automated evaluation harnesses.",
+        flyerImage: "assets/flyer_sample_reference.png",
+        wa: `🏆 *Learn AI Engineering from National Award Winners!*
+
+Waynautic Technologies was awarded *Best AI/ML Testing Strategy 2025* at the GenAI & ML Awards (https://lnkd.in/p/dPmtiGUF).
+
+We don't teach surface-level tutorials. We train you on:
+• Enterprise vector caching & hybrid semantic retrieval
+• Automated regression testing for LLMs & multi-agent loops
+• Prompt injection defense & production security guardrails
+
+👉 Book your 1-on-1 AI strategy session with mentor Pramod Gogadare:
+https://wa.me/919158998226?text=Hi%20Pramod,%20I%20want%20to%20learn%20about%20enterprise%20AI%20training`,
+        li: `Winning the "Best AI/ML Testing Strategy 2025" at the GenAI and ML Awards was an incredible milestone for our team at Waynautic Technologies.
+
+🏆 Announcement: https://lnkd.in/p/dPmtiGUF
+
+More than the trophy, it was a validation of a core philosophy:
+"If you can't test, evaluate, and benchmark your AI system, you haven't built software — you've built a gamble."
+
+When companies deploy LLM applications, they face regression drift, token bloat, and hallucinations. Our award-winning framework tackled these head-on.`,
+        pb: `"We won the Best AI/ML Testing Strategy 2025 at the GenAI Awards because we emphasize real system reliability over toy demos. When you join our cohort, you build systems to that exact enterprise standard."`
+      },
+      {
+        id: 5,
+        title: "5. Production RAG & MCP Engineering (Technical Depth)",
+        prompt: "Deep dive into why 90% of RAG implementations break in production. Hybrid search, cross-encoder rerankers, MCP.",
+        flyer: "Technical Deep Dive: Vector Databases, Hybrid Search (BM25 + Dense), MCP Tool Calling, Enterprise Guardrails.",
+        flyerImage: "assets/flyer_sample_reference.png",
+        wa: `💼 *Software Engineering is shifting to AI Engineering. Are you keeping up?*
+
+Calling an OpenAI API is easy. What enterprises are paying top salaries for is:
+• Token economics and inferencing optimization
+• Vector index sharding & hybrid semantic search
+• Enterprise-grade guardrails (Prompt injection defense, PII masking)
+• Autonomous agent orchestration with MCP protocols
+
+At *Waynautic Academy*, we train working developers with production-grade curriculum designed by award-winning practitioners.
+
+👉 *Schedule a Free 1-on-1 AI Upskilling Consultation:*
+https://wa.me/919158998226?text=Hi%20Pramod,%20I%20am%20a%20working%20developer%20interested%20in%20transitioning%20to%20AI%20Engineering`,
+        li: `Most developers build RAG systems like this:
+1. Load a PDF -> 2. Split into 500-token chunks -> 3. Cosine similarity.
+Then it hallucinates in production.
+
+Here is what enterprise-grade RAG actually looks like:
+1️⃣ Semantic & Structure-Aware Chunking
+2️⃣ Hybrid Search (Dense + Sparse with Reciprocal Rank Fusion)
+3️⃣ Re-ranking Stage (Cross-Encoder)
+4️⃣ Evaluation Guardrails (Faithfulness & Relevance)
+
+Stop building demo-grade toys. Build architectures that withstand live traffic.`,
+        pb: `"Great question about hybrid search! We actually build an end-to-end hybrid RAG pipeline with Cohere reranking in Week 3 of the cohort. Would you like to see the code structure we teach?"`
+      }
+    ];
+
+    let campaigns = [];
+    let activeCampaignId = 1;
+    let currentApiKey = localStorage.getItem(STORAGE_KEY_API) || '';
+    let lastPrompts = { flyers: '', wa: '', li: '', pb: '' };
+    let currentGeneratedImagePrompt = '';
+
+    function initApp() {
+      const savedKey = localStorage.getItem(STORAGE_KEY_API);
+      if (savedKey) {
+        currentApiKey = savedKey;
+        document.getElementById('api-key-input').value = savedKey;
+      } else {
+        localStorage.setItem(STORAGE_KEY_API, currentApiKey);
+      }
+
+      const savedDb = localStorage.getItem(STORAGE_KEY_DB);
+      if (savedDb) {
+        try {
+          campaigns = JSON.parse(savedDb);
+        } catch (e) {
+          campaigns = defaultCampaigns;
+        }
+      } else {
+        campaigns = defaultCampaigns;
+        saveDb();
+      }
+
+      renderSidebarTitles();
+      selectCampaign(campaigns[0] ? campaigns[0].id : 1);
+      renderCategoryFeeds();
+      initDefaultFlyer();
+    }
+
+    function saveDb() {
+      localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(campaigns));
+    }
+
+    function saveApiKey() {
+      const val = document.getElementById('api-key-input').value.trim();
+      currentApiKey = val;
+      localStorage.setItem(STORAGE_KEY_API, val);
+      showToast("API Key saved locally!");
+    }
+
+    function toggleApiKeyVisibility() {
+      const input = document.getElementById('api-key-input');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    async function testApiKey() {
+      const btn = document.getElementById('test-api-btn');
+      btn.innerText = "Testing...";
+      try {
+        const res = await callGeminiApi("Reply with 'API Connected Successfully!'", "text");
+        showToast(res || "API Key Verified & Connected!");
+        btn.innerText = "✓ Valid";
+        btn.className = "px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold transition";
+      } catch (err) {
+        alert("API Key Notice: " + err.message);
+        btn.innerText = "Error";
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".nav-tab").forEach(el => {
+        el.classList.remove("bg-blue-600", "text-white", "shadow-md");
+        el.classList.add("text-slate-600");
+      });
+
+      const activeSection = document.getElementById("tab-" + tabId);
+      const activeBtn = document.getElementById("tab-btn-" + tabId);
+      if (activeSection) activeSection.classList.remove("hidden");
+      if (activeBtn) {
+        activeBtn.classList.add("bg-blue-600", "text-white", "shadow-md");
+        activeBtn.classList.remove("text-slate-600");
+      }
+
+      if (tabId === 'flyers') {
+        setTimeout(() => {
+          renderFlyerPreview(currentFlyerData || DEFAULT_FLYER_DATA);
+        }, 50);
+      }
+    }
+
+    function renderSidebarTitles() {
+      const list = document.getElementById("titles-sidebar-list");
+      list.innerHTML = "";
+      document.getElementById("title-count-badge").innerText = `${campaigns.length} Titles`;
+
+      campaigns.forEach(c => {
+        const isActive = c.id === activeCampaignId;
+        const div = document.createElement("div");
+        div.className = `p-3 rounded-xl border cursor-pointer transition flex flex-col gap-1.5 ${
+          isActive 
+            ? "bg-blue-50 border-blue-400 shadow-sm text-slate-900" 
+            : "bg-white border-slate-200 hover:border-slate-300 text-slate-700"
+        }`;
+        div.onclick = () => selectCampaign(c.id);
+
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold ${isActive ? 'text-blue-700' : 'text-slate-800'} line-clamp-1">${escapeHtml(c.title)}</span>
+            <span class="text-[10px] text-slate-400 font-mono">#${c.id}</span>
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap text-[9px] font-mono">
+            <span class="px-1.5 py-0.5 rounded font-bold ${c.flyer ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-400'}">Flyer</span>
+            <span class="px-1.5 py-0.5 rounded font-bold ${c.wa ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-400'}">WhatsApp</span>
+            <span class="px-1.5 py-0.5 rounded font-bold ${c.li ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-400'}">LinkedIn</span>
+            <span class="px-1.5 py-0.5 rounded font-bold ${c.pb ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-400'}">Playbook</span>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function selectCampaign(id) {
+      activeCampaignId = id;
+      renderSidebarTitles();
+      const c = campaigns.find(item => item.id === id);
+      if (!c) return;
+
+      document.getElementById("active-title-label").innerText = c.title;
+
+      // Update Column 1: Flyer
+      document.getElementById("col-flyer-text").innerText = c.flyer || "Not generated yet. Open Full Title View to generate on-demand.";
+      document.getElementById("status-badge-flyer").innerText = c.flyer ? "Ready" : "Pending";
+      document.getElementById("status-badge-flyer").className = `text-[10px] px-2 py-0.5 rounded-full font-bold ${c.flyer ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`;
+      if (c.flyerImage) {
+        document.getElementById("col-flyer-img").src = c.flyerImage;
+      }
+
+      // Update Column 2: WhatsApp
+      document.getElementById("col-wa-text").innerText = c.wa || "Not generated yet. Open Full Title View to generate on-demand.";
+      document.getElementById("status-badge-wa").innerText = c.wa ? "Ready" : "Pending";
+      document.getElementById("status-badge-wa").className = `text-[10px] px-2 py-0.5 rounded-full font-bold ${c.wa ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`;
+
+      // Update Column 3: LinkedIn
+      document.getElementById("col-li-text").innerText = c.li || "Not generated yet. Open Full Title View to generate on-demand.";
+      document.getElementById("status-badge-li").innerText = c.li ? "Ready" : "Pending";
+      document.getElementById("status-badge-li").className = `text-[10px] px-2 py-0.5 rounded-full font-bold ${c.li ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`;
+
+      // Update Column 4: Playbook
+      document.getElementById("col-pb-text").innerText = c.pb || "Not generated yet. Open Full Title View to generate on-demand.";
+      document.getElementById("status-badge-pb").innerText = c.pb ? "Ready" : "Pending";
+      document.getElementById("status-badge-pb").className = `text-[10px] px-2 py-0.5 rounded-full font-bold ${c.pb ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`;
+    }
+
+    // Modal: Create New Title
+    function openCreateTitleModal() {
+      document.getElementById("create-title-modal").classList.remove("hidden");
+    }
+
+    function closeCreateTitleModal() {
+      document.getElementById("create-title-modal").classList.add("hidden");
+    }
+
+    async function submitCreateTitle() {
+      const titleName = document.getElementById("modal-title-name").value.trim();
+      const promptText = document.getElementById("modal-title-prompt").value.trim();
+      if (!titleName) {
+        alert("Please enter a campaign title name.");
+        return;
+      }
+
+      const genFlyer = document.getElementById("chk-flyer").checked;
+      const genWa = document.getElementById("chk-wa").checked;
+      const genLi = document.getElementById("chk-li").checked;
+      const genPb = document.getElementById("chk-pb").checked;
+
+      const btn = document.getElementById("btn-submit-title");
+      btn.innerText = "Generating Selected Categories...";
+      btn.disabled = true;
+
+      try {
+        const newId = Date.now();
+        const newCampaign = {
+          id: newId,
+          title: titleName,
+          prompt: promptText || titleName,
+          flyer: "",
+          flyerImage: "assets/flyer_sample_reference.png",
+          wa: "",
+          li: "",
+          pb: ""
+        };
+
+        const context = `CAMPAIGN TOPIC: "${titleName}". SPECIFIC DETAILS: ${promptText || titleName}`;
+        const tasks = [];
+
+        if (genFlyer) {
+          tasks.push(
+            callGeminiApi(
+              `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write a high-converting WhatsApp flyer copy blueprint for: ${context}. Include Headline, 3 core technical highlight bullets with emojis, 1-on-1 mentor + 3-Month Industry Internship benefit, and Pramod Gogadare (+91 9158998226) contact card.`
+            ).then(res => { newCampaign.flyer = res; })
+          );
+        }
+
+        if (genWa) {
+          tasks.push(
+            callGeminiApi(
+              `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write a highly engaging, production-grade WhatsApp broadcast message for: ${context}. Emphasize real software engineering (Python, Vector DBs, RAG, MCP) and the 3-Month Industry Internship. Never use non-technical or no-code language.`
+            ).then(res => { newCampaign.wa = res; })
+          );
+        }
+
+        if (genLi) {
+          tasks.push(
+            callGeminiApi(
+              `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write an authoritative, viral LinkedIn text post for: ${context}. Start with an irresistible 2-line hook, share real technical value, and direct readers to academy.waynautic.com.`
+            ).then(res => { newCampaign.li = res; })
+          );
+        }
+
+        if (genPb) {
+          tasks.push(
+            callGeminiApi(
+              `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write a 3-step inbound DM qualification script & closing formula for: ${context}. Guide the prospect from diagnostic greeting to the Free Consultation / ₹19 Webinar, and close on the 4-week cohort + 3-month internship.`
+            ).then(res => { newCampaign.pb = res; })
+          );
+        }
+
+        await Promise.all(tasks);
+
+        campaigns.unshift(newCampaign);
+        saveDb();
+        closeCreateTitleModal();
+        selectCampaign(newId);
+        showToast("New campaign title created & generated!");
+
+        document.getElementById("modal-title-name").value = "";
+        document.getElementById("modal-title-prompt").value = "";
+      } catch (err) {
+        alert("Generation Error: " + err.message);
+      } finally {
+        btn.innerText = "Generate Selected Categories";
+        btn.disabled = false;
+      }
+    }
+
+    // Modal: Full Title View Mode
+    function openFullTitleViewModal() {
+      const c = campaigns.find(item => item.id === activeCampaignId);
+      if (!c) return;
+
+      document.getElementById("full-modal-title").innerText = c.title;
+      document.getElementById("full-modal-flyer-content").innerText = c.flyer || "— [Not Generated Yet] Click 'Generate on Demand' above to create it.";
+      document.getElementById("full-modal-wa-content").innerText = c.wa || "— [Not Generated Yet] Click 'Generate on Demand' above to create it.";
+      document.getElementById("full-modal-li-content").innerText = c.li || "— [Not Generated Yet] Click 'Generate on Demand' above to create it.";
+      document.getElementById("full-modal-pb-content").innerText = c.pb || "— [Not Generated Yet] Click 'Generate on Demand' above to create it.";
+
+      document.getElementById("full-view-modal").classList.remove("hidden");
+    }
+
+    function closeFullTitleViewModal() {
+      document.getElementById("full-view-modal").classList.add("hidden");
+    }
+
+    function deleteCategoryAsset(categoryKey) {
+      const c = campaigns.find(item => item.id === activeCampaignId);
+      if (!c) return;
+
+      if (confirm(`Are you sure you want to delete the asset for this category?`)) {
+        c[categoryKey] = "";
+        saveDb();
+        openFullTitleViewModal();
+        selectCampaign(activeCampaignId);
+        showToast("Category asset deleted.");
+      }
+    }
+
+    function deleteCurrentCampaignTitle() {
+      if (campaigns.length <= 1) {
+        alert("You must keep at least one campaign title.");
+        return;
+      }
+      if (confirm("Are you sure you want to delete this entire campaign title?")) {
+        campaigns = campaigns.filter(item => item.id !== activeCampaignId);
+        saveDb();
+        closeFullTitleViewModal();
+        selectCampaign(campaigns[0].id);
+        showToast("Campaign title deleted.");
+      }
+    }
+
+    async function generateCategoryOnDemand(categoryKey) {
+      const c = campaigns.find(item => item.id === activeCampaignId);
+      if (!c) return;
+
+      showToast("Generating " + categoryKey + " on demand...");
+      const context = `CAMPAIGN: "${c.title}". Prompt idea: ${c.prompt}`;
+
+      try {
+        let prompt = "";
+        if (categoryKey === 'flyer') prompt = `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write a high-converting WhatsApp flyer copy blueprint for: ${context}.`;
+        else if (categoryKey === 'wa') prompt = `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write an engaging, technically grounded WhatsApp broadcast message for: ${context}. Include 3-Month Industry Internship details.`;
+        else if (categoryKey === 'li') prompt = `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write an authoritative LinkedIn text post for: ${context}.`;
+        else if (categoryKey === 'pb') prompt = `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}\n\nTask: Write an inbound qualification script & closing formula for: ${context}.`;
+
+        const res = await callGeminiApi(prompt);
+        c[categoryKey] = res;
+        saveDb();
+        openFullTitleViewModal();
+        selectCampaign(activeCampaignId);
+        showToast("Category generated successfully!");
+      } catch (err) {
+        alert("On-demand generation failed: " + err.message);
+      }
+    }
+
+    // ==============================================================
+    // FEATURE: HTML FLYER GENERATOR (PIXEL-PERFECT TEMPLATE)
+    // ==============================================================
+    let currentFlyerData = null;
+
+    const DEFAULT_FLYER_DATA = {
+      categoryTag: "MARKET-READY TRAINING",
+      headline: "AI skills are no longer optional. They're",
+      headlineHighlight: "essential.",
+      description: "A practical training program to learn AI the right way, and turn it into a skill employers actually notice. Built for students and professionals, no prior experience needed.",
+      features: [
+        { icon: "▶", title: "56 topics — video + live sessions", sub: "Every topic covered on video, reinforced through live sessions" },
+        { icon: "📅", title: "4 weeks — basics to advanced", sub: "A fast, structured path from fundamentals to advanced AI" },
+        { icon: "🛡️", title: "4-5 agentic, market-ready projects", sub: "Build real, portfolio-ready AI projects, not just theory" }
+      ],
+      takeaways: [
+        "<strong>Personalized training with a dedicated mentor</strong>",
+        "<strong>Continue with 3-Month Industry Internship</strong> right after AI training.",
+        "<strong>Real fundamentals, hands-on practice, and a certification that proves it</strong> — not just another AI trend to chase."
+      ],
+      closingCta: "Enroll now and start building AI skills that actually matter for your career.",
+      ctaHeading: "Enroll in the training program",
+      ctaSub: "Scan the code or use the contact details to register.",
+      footerNote: "Open to college students & working professionals across all streams."
+    };
+
+    function buildFlyerHtml(data) {
+      const d = data || DEFAULT_FLYER_DATA;
+      const featuresHtml = (d.features || []).map(f => `
+        <div class="feature-item">
+          <div class="feature-icon-box">${f.icon || '▶'}</div>
+          <div class="feature-text">
+            <strong>${f.title}</strong>
+            <p>${f.sub}</p>
+          </div>
+        </div>
+      `).join('');
+
+      const takeawaysHtml = (d.takeaways || []).map(t => `
+        <div class="takeaway-item">
+          <span class="takeaway-dash">—</span>
+          <div>${t}</div>
+        </div>
+      `).join('');
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waynautic Academy Flyer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #e5e5e5; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 24px; }
+    .flyer { width: 560px; background-color: #F4EFEB; padding: 40px 32px 32px 32px; border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; letter-spacing: 0.5px; color: #122443; }
+    .brand-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 12px; }
+    .category-tag { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #78716c; text-transform: uppercase; }
+    .hero-card { background-color: #152542; border-radius: 16px; padding: 32px 28px; color: #fff; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(18,36,67,0.12); }
+    .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .hero-enroll-hint { text-align: right; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #94a3b8; }
+    .hero-enroll-hint span { display: block; color: #cbd5e1; font-weight: 500; font-size: 10px; letter-spacing: 0; margin-top: 2px; }
+    .hero-title { font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #fff; max-width: 400px; }
+    .hero-title .highlight { color: #E0A656; }
+    .hero-sub { font-size: 12px; line-height: 1.5; color: #cbd5e1; margin-bottom: 26px; }
+    .feature-list { display: flex; flex-direction: column; gap: 16px; }
+    .feature-item { display: flex; align-items: flex-start; gap: 14px; }
+    .feature-icon-box { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #93c5fd; font-size: 14px; }
+    .feature-text strong { display: block; font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .feature-text p { font-size: 11px; color: #94a3b8; line-height: 1.4; }
+    .takeaway-section { padding: 0 4px; margin-bottom: 24px; }
+    .takeaway-kicker { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; color: #b45309; text-transform: uppercase; margin-bottom: 12px; }
+    .takeaway-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: #1e293b; line-height: 1.4; }
+    .takeaway-dash { color: #E0A656; font-weight: 800; font-size: 16px; line-height: 1; }
+    .takeaway-closing { font-size: 12px; font-style: italic; color: #78350f; font-weight: 600; margin-top: 10px; }
+    .cta-card { background-color: #152542; border-radius: 14px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: white; margin-bottom: 16px; }
+    .cta-text-side { flex: 1; }
+    .cta-kicker { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; color: #E0A656; text-transform: uppercase; margin-bottom: 4px; }
+    .cta-heading { font-size: 16px; font-weight: 800; color: white; line-height: 1.25; margin-bottom: 4px; }
+    .cta-sub { font-size: 11px; color: #94a3b8; line-height: 1.3; }
+    .qr-container { text-align: center; flex-shrink: 0; }
+    .qr-box { width: 72px; height: 72px; background: white; padding: 4px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+    .qr-label { font-size: 8px; font-weight: 800; letter-spacing: 0.5px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; }
+    .contact-card { background-color: #E0A656; color: #152542; padding: 12px 16px; border-radius: 10px; text-align: center; flex-shrink: 0; min-width: 145px; }
+    .contact-kicker { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; opacity: 0.85; }
+    .contact-name { font-size: 13px; font-weight: 800; line-height: 1.2; }
+    .contact-phone { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
+    .footer-note { text-align: center; font-size: 11px; font-weight: 600; color: #57534e; }
+  </style>
+</head>
+<body>
+  <div class="flyer">
+    <div class="header">
+      <div class="brand"><span class="brand-icon">W</span><span>WAYNAUTIC ACADEMY</span></div>
+      <div class="category-tag">${d.categoryTag || 'MARKET-READY TRAINING'}</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-top"><div style="flex:1;"></div><div class="hero-enroll-hint">ENROLL<span>Details below</span></div></div>
+      <h1 class="hero-title">${d.headline} <span class="highlight">${d.headlineHighlight}</span></h1>
+      <p class="hero-sub">${d.description}</p>
+      <div class="feature-list">${featuresHtml}</div>
+    </div>
+    <div class="takeaway-section">
+      <div class="takeaway-kicker">THE KEY TAKEAWAY</div>
+      ${takeawaysHtml}
+      <div class="takeaway-closing">${d.closingCta}</div>
+    </div>
+    <div class="cta-card">
+      <div class="cta-text-side">
+        <div class="cta-kicker">RESERVE YOUR SEAT</div>
+        <div class="cta-heading">${d.ctaHeading || 'Enroll in the training program'}</div>
+        <div class="cta-sub">${d.ctaSub || 'Scan the code or use the contact details to register.'}</div>
+      </div>
+      <div class="qr-container">
+        <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://academy.waynautic.com/" alt="QR" /></div>
+        <div class="qr-label">SCAN TO REGISTER</div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-kicker">CONTACT</div>
+        <div class="contact-name">Pramod Gogadare</div>
+        <div class="contact-phone">9158998226</div>
+      </div>
+    </div>
+    <div class="footer-note">${d.footerNote || 'Open to college students & working professionals across all streams.'}</div>
+  </div>
+</body>
+</html>`;
+    }
+
+    function renderFlyerPreview(data) {
+      const html = buildFlyerHtml(data);
+      const iframe = document.getElementById('flyer-preview-iframe');
+      if (!iframe) return;
+      iframe.srcdoc = html;
+      const wrapper = document.getElementById('flyer-preview-wrapper');
+      if (!wrapper) return;
+      const clientWidth = wrapper.clientWidth;
+      const wrapperWidth = clientWidth > 50 ? clientWidth - 16 : 560;
+      const scale = Math.min(1, Math.max(0.4, wrapperWidth / 580));
+      iframe.style.transform = `scale(${scale})`;
+      iframe.style.transformOrigin = 'top center';
+      iframe.style.width = '560px';
+      iframe.style.height = '950px';
+      wrapper.style.height = `${Math.round(950 * scale) + 20}px`;
+    }
+
+    function initDefaultFlyer() {
+      currentFlyerData = { ...DEFAULT_FLYER_DATA };
+      document.getElementById('flyer-content-editor').value = JSON.stringify(currentFlyerData, null, 2);
+      renderFlyerPreview(currentFlyerData);
+    }
+
+    function applyFlyerEdits() {
+      try {
+        const edited = JSON.parse(document.getElementById('flyer-content-editor').value);
+        currentFlyerData = edited;
+        renderFlyerPreview(currentFlyerData);
+        showToast("Flyer updated from edits!");
+      } catch (e) {
+        alert("Invalid JSON. Please fix the syntax and try again.\n\n" + e.message);
+      }
+    }
+
+    function openFlyerFullscreen() {
+      const html = buildFlyerHtml(currentFlyerData || DEFAULT_FLYER_DATA);
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }
+
+    async function runFlyerContentGeneration() {
+      const promptInput = document.getElementById("gen-flyer-prompt");
+      const btn = document.getElementById("btn-gen-flyers");
+      const statusEl = document.getElementById("flyer-gen-status");
+      const editor = document.getElementById("flyer-content-editor");
+
+      const userIdea = promptInput.value.trim() || "Waynautic Academy flyer for 4-Week AI Engineering training with guaranteed 3-Month Industry Internship";
+      lastPrompts['flyers'] = userIdea;
+
+      btn.innerHTML = "<span>⚡ Generating Flyer Content...</span>";
+      btn.disabled = true;
+      statusEl.innerText = "Generating...";
+
+      try {
+        const flyerPrompt = `${WAYNAUTIC_BRAND_SYSTEM_PROMPT}
+
+You are generating structured content for a professional marketing flyer for Waynautic Academy.
+
+USER REQUEST: "${userIdea}"
+
+Return ONLY a valid JSON object (no markdown fences, no explanation) with this exact structure:
+{
+  "categoryTag": "short uppercase tag for top-right corner, max 3 words, e.g. MARKET-READY TRAINING or AI ENGINEERING SPRINT",
+  "headline": "main headline text WITHOUT the highlighted word at the end",
+  "headlineHighlight": "one powerful word to highlight in gold at the end of the headline",
+  "description": "1-2 sentence supporting description under the headline",
+  "features": [
+    { "icon": "emoji icon", "title": "bold feature title with dash separator", "sub": "short supporting description" },
+    { "icon": "emoji icon", "title": "bold feature title", "sub": "short description" },
+    { "icon": "emoji icon", "title": "bold feature title", "sub": "short description" }
+  ],
+  "takeaways": [
+    "HTML string for takeaway 1 — use <strong> tags for bold parts",
+    "HTML string for takeaway 2",
+    "HTML string for takeaway 3"
+  ],
+  "closingCta": "italic closing call-to-action sentence in gold",
+  "ctaHeading": "CTA heading for the bottom card, e.g. Enroll in the training program",
+  "ctaSub": "CTA subtext, 1 sentence",
+  "footerNote": "bottom footer note, 1 sentence"
+}
+
+IMPORTANT:
+- Keep all text concise — this is a visual flyer, not an article.
+- The headline + highlight should form one complete impactful sentence.
+- Feature titles should be short (max 8 words) with a dash separator.
+- Takeaways use HTML <strong> tags for bold emphasis.
+- Always mention Waynautic Academy's real strengths: production-grade AI, RAG, MCP, 1-on-1 mentorship, 3-Month Industry Internship, Dual Certification.
+- Return ONLY the JSON object. No other text.`;
+
+        const result = await callGeminiApi(flyerPrompt);
+
+        // Parse JSON from response (strip markdown fences if present)
+        let jsonStr = result.trim();
+        if (jsonStr.startsWith('```')) {
+          jsonStr = jsonStr.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
+        }
+        const flyerData = JSON.parse(jsonStr);
+
+        currentFlyerData = flyerData;
+        editor.value = JSON.stringify(flyerData, null, 2);
+        renderFlyerPreview(flyerData);
+        statusEl.innerText = "Generated ✓";
+        showToast("Flyer generated! Edit content on the right if needed.");
+      } catch (err) {
+        statusEl.innerText = "Error";
+        alert("Flyer generation failed: " + err.message);
+      } finally {
+        btn.innerHTML = "<span>✨ Generate Flyer</span>";
+        btn.disabled = false;
+      }
+    }
+
+    // ==============================================================
+    // TEXT GENERATOR ACTIONS WITH DYNAMIC BRAND ANGLES
+    // ==============================================================
+    async function runAiGeneration(tab) {
+      const promptInput = document.getElementById(`gen-${tab}-prompt`);
+      const outputBox = document.getElementById(`gen-${tab}-output`);
+      const btn = document.getElementById(`btn-gen-${tab}`);
+
+      const userPrompt = promptInput.value.trim();
+      if (!userPrompt) {
+        alert("Please enter a prompt or instruction in the text edit box.");
+        return;
+      }
+
+      lastPrompts[tab] = userPrompt;
+      btn.innerText = "Generating with Gemini...";
+      btn.disabled = true;
+      outputBox.innerHTML = `<span class="text-emerald-700 font-mono animate-pulse font-bold">⚡ Calling Gemini with Waynautic Brand Guardrails...</span>`;
+
+      try {
+        let angleInstruction = "";
+        if (tab === 'wa') {
+          const angleSelect = document.getElementById("wa-angle-select");
+          const selectedAngle = angleSelect ? angleSelect.value : 'auto';
+
+          if (selectedAngle === 'internship') {
+            angleInstruction = "Primary Angle: Emphasize the guaranteed 3-Month Industry Internship right after the 4-week AI training, dual certificates, and real client projects.";
+          } else if (selectedAngle === 'contrarian') {
+            angleInstruction = "Primary Angle: Contrarian wake-up call about why basic tutorials and superficial API calls don't get developers hired in 2026, and why enterprise RAG/MCP matters.";
+          } else if (selectedAngle === 'story') {
+            angleInstruction = "Primary Angle: Student breakthrough story — going from tutorial hell to building production agentic AI systems with 1-on-1 mentor guidance.";
+          } else if (selectedAngle === 'webinar') {
+            angleInstruction = "Primary Angle: ₹19 Live AI Masterclass Webinar flash invite — 90 minutes of live hands-on building, code-along, and Q&A.";
+          } else if (selectedAngle === 'free') {
+            angleInstruction = "Primary Angle: Zero-friction invitation for a Free 1-on-1 AI Career Consultation (15 Mins) with Pramod Gogadare.";
+          } else {
+            angleInstruction = "Primary Angle: Dynamic creative angle tailored to the user's specific request. Vary the opening hook and vocabulary.";
+          }
+        } else if (tab === 'li') {
+          const liAngleSelect = document.getElementById("li-angle-select");
+          const selectedAngle = liAngleSelect ? liAngleSelect.value : 'auto';
+
+          if (selectedAngle === 'tech') {
+            angleInstruction = "Focus on technical architecture: RAG chunking, hybrid search (BM25 + Dense embeddings), re-rankers, and MCP tool calling.";
+          } else if (selectedAngle === 'lead') {
+            angleInstruction = "Focus on viral lead generation: Offer the 2026 AI Engineering Roadmap PDF and instruct readers to comment 'ROADMAP' below.";
+          } else if (selectedAngle === 'award') {
+            angleInstruction = "Focus on enterprise credibility: Highlight Waynautic winning 'Best AI/ML Testing Strategy 2025' at the GenAI & ML Awards.";
+          } else if (selectedAngle === 'hot_take') {
+            angleInstruction = "Contrarian perspective: Why prompt engineering alone is dead in 2026, and why real software engineering with AI is what gets compensated.";
+          }
+        }
+
+        const fullInstruction = `
+${WAYNAUTIC_BRAND_SYSTEM_PROMPT}
+
+USER INSTRUCTION: "${userPrompt}"
+${angleInstruction}
+
+OUTPUT REQUIREMENTS:
+- Format specifically for ${tab === 'wa' ? 'WhatsApp (clean bolding, emojis, bullets, 1-tap wa.link)' : tab === 'li' ? 'LinkedIn (hook in first 2 lines, white space between paragraphs, strong discussion question or CTA)' : 'consultative DM closing script'}.
+- Ensure tone is authoritative, encouraging, and deeply technical (for real developers and engineers).
+- Never use generic no-code or non-technical AI phrasing.
+`;
+
+        const result = await callGeminiApi(fullInstruction);
+        outputBox.innerText = result;
+        showToast("Branded content generated!");
+      } catch (err) {
+        outputBox.innerHTML = `<span class="text-rose-600 font-mono font-bold">Error: ${escapeHtml(err.message)}</span>`;
+      } finally {
+        btn.innerText = "Generate Button";
+        btn.disabled = false;
+      }
+    }
+
+    function retryGeneration(tab) {
+      if (tab === 'flyers') {
+        runFlyerContentGeneration();
+        return;
+      }
+      const promptInput = document.getElementById(`gen-${tab}-prompt`);
+      if (!promptInput.value.trim() && lastPrompts[tab]) {
+        promptInput.value = lastPrompts[tab];
+      }
+      runAiGeneration(tab);
+    }
+
+    function discardGeneration(tab) {
+      if (tab === 'flyers') {
+        document.getElementById('gen-flyer-prompt').value = "";
+        initDefaultFlyer();
+        showToast("Flyer reset to default.");
+        return;
+      }
+      document.getElementById(`gen-${tab}-prompt`).value = "";
+      document.getElementById(`gen-${tab}-output`).innerHTML = `<span class="text-slate-400 italic font-sans">Generated content cleared.</span>`;
+      showToast("Discarded.");
+    }
+
+    function saveGeneration(tab) {
+      const c = campaigns.find(item => item.id === activeCampaignId);
+      if (!c) return;
+
+      if (tab === 'flyers') {
+        if (!currentFlyerData) {
+          alert("No flyer content to save.");
+          return;
+        }
+        c.flyer = `Headline: ${currentFlyerData.headline} ${currentFlyerData.headlineHighlight}\n\nDescription: ${currentFlyerData.description}\n\nKey Highlights:\n` +
+          (currentFlyerData.features || []).map(f => `• ${f.title} - ${f.sub}`).join('\n') +
+          `\n\nTakeaways:\n` +
+          (currentFlyerData.takeaways || []).map(t => `• ${t.replace(/<[^>]*>/g, '')}`).join('\n') +
+          `\n\nCTA: ${currentFlyerData.closingCta}\nContact: Pramod Gogadare (9158998226)`;
+        saveDb();
+        selectCampaign(activeCampaignId);
+        showToast("Saved flyer to active campaign!");
+        return;
+      }
+
+      const outputEl = document.getElementById(`gen-${tab}-output`);
+      const outputText = outputEl ? outputEl.innerText : '';
+      if (!outputText || outputText.includes("will appear here") || outputText.includes("cleared")) {
+        alert("No generated content to save.");
+        return;
+      }
+
+      c[tab] = outputText;
+      saveDb();
+      selectCampaign(activeCampaignId);
+      showToast("Saved to active campaign!");
+    }
+
+    // Core Gemini API Dispatcher (High Temperature 0.85 for Creativity & Dynamic Phrasing)
+    async function callGeminiApi(prompt) {
+      const key = currentApiKey || localStorage.getItem(STORAGE_KEY_API) || '';
+
+      // 1. Try local server proxy endpoint if running via HTTP with 7s timeout
+      if (window.location.protocol.startsWith('http')) {
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 7000);
+          const proxyResp = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, apiKey: key, type: 'text' }),
+            signal: controller.signal
+          });
+          clearTimeout(timer);
+          if (proxyResp.ok) {
+            const data = await proxyResp.json();
+            if (data.content) return data.content;
+            if (data.error) throw new Error(data.error);
+          }
+        } catch (proxyErr) {
+          // Fall back to direct browser fetch
+        }
+      }
+
+      // 2. Direct browser fetch to Google Generative Language API
+      const candidateModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-3.8-flash', 'gemini-flash-lite-latest', 'gemini-3-flash-preview'];
+      let lastErr = null;
+
+      for (const model of candidateModels) {
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 10000);
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+          const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { 
+                temperature: 0.85, 
+                topP: 0.95,
+                topK: 64
+              }
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timer);
+
+          if (resp.ok) {
+            const data = await resp.json();
+            return data.candidates[0].content.parts[0].text;
+          } else {
+            const errData = await resp.json().catch(() => ({}));
+            lastErr = `${model} returned ${resp.status}: ${errData.error?.message || resp.statusText}`;
+          }
+        } catch (e) {
+          lastErr = e.message;
+        }
+      }
+
+      throw new Error("Generation failed: " + lastErr);
+    }
+
+    // Helpers
+    function copyColText(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      copyText(text);
+    }
+
+    function copyText(str) {
+      navigator.clipboard.writeText(str).then(() => {
+        showToast("Copied to clipboard!");
+      }).catch(err => {
+        const textarea = document.createElement("textarea");
+        textarea.value = str;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        showToast("Copied to clipboard!");
+      });
+    }
+
+    function copyElementText(id) {
+      const el = document.getElementById(id);
+      if (el) copyText(el.innerText || el.textContent);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      const msgEl = document.getElementById("toast-msg");
+      msgEl.innerText = msg;
+      toast.classList.remove("translate-y-20", "opacity-0");
+      setTimeout(() => {
+        toast.classList.add("translate-y-20", "opacity-0");
+      }, 2500);
+    }
+
+    function openFullscreenFlyer() {
+      openFlyerFullscreen();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function renderCategoryFeeds() {
+      const waCont = document.getElementById("wa-messages-container");
+      waCont.innerHTML = "";
+      campaigns.forEach(c => {
+        if (!c.wa) return;
+        const div = document.createElement("div");
+        div.className = "bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3";
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">${escapeHtml(c.title)}</span>
+            <button onclick="copyText(\`${escapeQuotes(c.wa)}\`)" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition">Copy Message</button>
+          </div>
+          <pre class="bg-slate-50 p-3.5 rounded-xl text-xs text-slate-800 font-sans whitespace-pre-wrap leading-relaxed border border-slate-200 max-h-56 overflow-y-auto custom-scrollbar">${escapeHtml(c.wa)}</pre>
+        `;
+        waCont.appendChild(div);
+      });
+
+      const liCont = document.getElementById("li-posts-container");
+      liCont.innerHTML = "";
+      campaigns.forEach(c => {
+        if (!c.li) return;
+        const div = document.createElement("div");
+        div.className = "bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3";
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-800 uppercase tracking-wider">${escapeHtml(c.title)}</span>
+            <button onclick="copyText(\`${escapeQuotes(c.li)}\`)" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition">Copy Post</button>
+          </div>
+          <pre class="bg-slate-50 p-3.5 rounded-xl text-xs text-slate-800 font-sans whitespace-pre-wrap leading-relaxed border border-slate-200 max-h-56 overflow-y-auto custom-scrollbar">${escapeHtml(c.li)}</pre>
+        `;
+        liCont.appendChild(div);
+      });
+    }
+
+    function escapeQuotes(str) {
+      if (!str) return '';
+      return str.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$/g, "\\$");
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>

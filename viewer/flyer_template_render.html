@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waynautic Academy — WhatsApp Flyer Template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #e5e5e5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .flyer {
+      width: 560px;
+      background-color: #F4EFEB;
+      padding: 40px 32px 32px 32px;
+      border-radius: 4px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      color: #122443;
+    }
+    .brand-icon {
+      width: 22px;
+      height: 22px;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .category-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #78716c;
+      text-transform: uppercase;
+    }
+    .hero-card {
+      background-color: #152542;
+      border-radius: 16px;
+      padding: 32px 28px;
+      color: #ffffff;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(18, 36, 67, 0.12);
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .hero-enroll-hint {
+      text-align: right;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #94a3b8;
+    }
+    .hero-enroll-hint span {
+      display: block;
+      color: #cbd5e1;
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0;
+      margin-top: 2px;
+    }
+    .hero-title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: #ffffff;
+      max-width: 400px;
+    }
+    .hero-title .highlight {
+      color: #E0A656;
+    }
+    .hero-sub {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin-bottom: 26px;
+    }
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .feature-icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #93c5fd;
+      font-size: 14px;
+    }
+    .feature-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .feature-text p {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+    .takeaway-section {
+      padding: 0 4px;
+      margin-bottom: 24px;
+    }
+    .takeaway-kicker {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #b45309;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .takeaway-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #1e293b;
+      line-height: 1.4;
+    }
+    .takeaway-dash {
+      color: #E0A656;
+      font-weight: 800;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .takeaway-closing {
+      font-size: 12px;
+      font-style: italic;
+      color: #78350f;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .cta-card {
+      background-color: #152542;
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: white;
+      margin-bottom: 16px;
+    }
+    .cta-text-side {
+      flex: 1;
+    }
+    .cta-kicker {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #E0A656;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .cta-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+    .cta-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.3;
+    }
+    .qr-container {
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .qr-box {
+      width: 72px;
+      height: 72px;
+      background: white;
+      padding: 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .qr-label {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    .contact-card {
+      background-color: #E0A656;
+      color: #152542;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-align: center;
+      flex-shrink: 0;
+      min-width: 145px;
+    }
+    .contact-kicker {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      opacity: 0.85;
+    }
+    .contact-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .contact-phone {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #57534e;
+    }
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+      }
+      .flyer {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="flyer">
+    <!-- Top Header -->
+    <div class="header">
+      <div class="brand">
+        <span class="brand-icon">W</span>
+        <span>WAYNAUTIC ACADEMY</span>
+      </div>
+      <div class="category-tag">MARKET-READY TRAINING</div>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <div class="hero-top">
+        <div style="flex: 1;"></div>
+        <div class="hero-enroll-hint">
+          ENROLL
+          <span>Details below</span>
+        </div>
+      </div>
+
+      <h1 class="hero-title">
+        AI skills are no longer optional. They're <span class="highlight">essential.</span>
+      </h1>
+
+      <p class="hero-sub">
+        A practical training program to learn AI the right way, and turn it into a skill employers actually notice. Built for students and professionals, no prior experience needed.
+      </p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon-box">▶</div>
+          <div class="feature-text">
+            <strong>56 topics — video + live sessions</strong>
+            <p>Every topic covered on video, reinforced through live sessions</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-box">📅</div>
+          <div class="feature-text">
+            <strong>4 weeks — basics to advanced</strong>
+            <p>A fast, structured path from fundamentals to advanced AI</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon-box">🛡️</div>
+          <div class="feature-text">
+            <strong>4-5 agentic, market-ready projects</strong>
+            <p>Build real, portfolio-ready AI projects, not just theory</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Takeaway Section -->
+    <div class="takeaway-section">
+      <div class="takeaway-kicker">THE KEY TAKEAWAY</div>
+
+      <div class="takeaway-item">
+        <span class="takeaway-dash">—</span>
+        <div><strong>Personalized training with a dedicated mentor</strong></div>
+      </div>
+
+      <div class="takeaway-item">
+        <span class="takeaway-dash">—</span>
+        <div><strong>Continue with 3-Month Industry Internship</strong> right after AI training.</div>
+      </div>
+
+      <div class="takeaway-item">
+        <span class="takeaway-dash">—</span>
+        <div><strong>Real fundamentals, hands-on practice, and a certification that proves it</strong> — not just another AI trend to chase.</div>
+      </div>
+
+      <div class="takeaway-closing">
+        Enroll now and start building AI skills that actually matter for your career.
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-card">
+      <div class="cta-text-side">
+        <div class="cta-kicker">RESERVE YOUR SEAT</div>
+        <div class="cta-heading">Enroll in the training program</div>
+        <div class="cta-sub">Scan the code or use the contact details to register.</div>
+      </div>
+
+      <div class="qr-container">
+        <div class="qr-box">
+          <!-- Dynamic QR pointing to academy registration -->
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://academy.waynautic.com/" alt="Scan to Register QR" />
+        </div>
+        <div class="qr-label">SCAN TO REGISTER</div>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-kicker">CONTACT</div>
+        <div class="contact-name">Pramod Gogadare</div>
+        <div class="contact-phone">9158998226</div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Open to college students & working professionals across all streams.
+    </div>
+  </div>
+
+</body>
+</html>
