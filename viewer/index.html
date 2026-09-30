@@ -731,15 +731,22 @@
           </div>
 
           <!-- Keywords -->
-          <div class="sm:col-span-4">
+          <div class="sm:col-span-6">
             <label class="block text-[11px] font-bold text-slate-600 mb-1">Keywords / Colleges (Optional):</label>
             <input type="text" id="leads-keywords" placeholder="e.g. PCCOE, COEP, MIT, Python, RAG" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-2.5 rounded-xl font-medium focus:outline-none focus:border-indigo-500" />
           </div>
 
-          <!-- Search Button -->
-          <div class="sm:col-span-2 flex items-end">
-            <button onclick="searchLeadsUi()" id="btn-search-leads" class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-1.5 mt-auto">
-              <span>🔍 Search LinkedIn</span>
+          <!-- Action Buttons -->
+          <div class="sm:col-span-12 flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+            <button onclick="searchLeadsUi()" id="btn-search-leads" class="py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-1.5">
+              <span>🔍 Search LinkedIn (API)</span>
+            </button>
+            <button onclick="openGoogleXRayDirect()" class="py-2.5 px-4 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-xs" title="Open search results directly in your Programmable Search Engine without any API key restrictions">
+              <span>🌐 Open Google X-Ray (Zero-Key Web)</span>
+              <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </button>
+            <button onclick="openQuickPasteModal()" class="py-2.5 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-xs">
+              <span>📋 Paste & Extract Leads</span>
             </button>
           </div>
         </div>
@@ -1104,6 +1111,43 @@
             Done
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: QUICK PASTE & EXTRACT LEADS                             -->
+  <!-- ============================================================== -->
+  <div id="quick-paste-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-xl w-full flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-150">
+      <div class="p-5 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">📋</span>
+          <h3 class="text-base font-extrabold text-slate-900">Quick Paste & Extract Leads</h3>
+        </div>
+        <button onclick="closeQuickPasteModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold flex items-center justify-center text-sm transition">✕</button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Target Persona Type:</label>
+          <select id="paste-leads-role" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-2.5 rounded-xl font-bold focus:outline-none focus:border-indigo-500">
+            <option value="tpo">🎓 TPOs & Placement Officers</option>
+            <option value="student">👨‍💻 Tech Students & Freshers</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Paste Search Results or LinkedIn Snippets:</label>
+          <textarea id="paste-leads-text" rows="6" placeholder="Paste lines like:&#10;Suraj - Training and Placement Officer at IREF Pune | LinkedIn&#10;Swapnalee Joshi Limaye - Training and Placement Officer at Arihant Group of Institutes, Pune&#10;Abhimanyu Gadhave - Assistant Professor & TPO at SRTTC Kamshet" class="w-full bg-slate-50 border border-slate-300 text-xs text-slate-900 p-3 rounded-xl focus:outline-none focus:border-blue-500 font-mono shadow-inner"></textarea>
+          <span class="text-[11px] text-slate-500 mt-1 block">Automatically parses Name, Headline, College, LinkedIn links, and Indian phone numbers!</span>
+        </div>
+      </div>
+      <div class="p-4 px-6 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+        <button onclick="closeQuickPasteModal()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition">
+          Cancel
+        </button>
+        <button onclick="processPastedLeads()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs transition shadow-md shadow-blue-500/20">
+          ⚡ Extract & Add to Pipeline
+        </button>
       </div>
     </div>
   </div>

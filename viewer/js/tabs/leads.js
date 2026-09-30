@@ -127,6 +127,123 @@ async function searchLeadsUi() {
   }
 }
 
+function openGoogleXRayDirect() {
+  const targetRole = document.getElementById('leads-target-role')?.value || 'tpo';
+  const location = document.getElementById('leads-location')?.value.trim() || 'Pune';
+  const customKeywords = document.getElementById('leads-keywords')?.value.trim() || '';
+  const googleCreds = getGoogleApiCredentials();
+  const cx = googleCreds.cx || '5412b4801b4634488';
+
+  let query = "";
+  if (targetRole === 'tpo') {
+    query = `"Training and Placement Officer" OR "TPO" "engineering" "${location}"`;
+  } else {
+    query = `"B.Tech" OR "MCA" OR "Computer Science" "2025" "${location}"`;
+  }
+  if (customKeywords) query += ` ${customKeywords}`;
+
+  const cseUrl = `https://cse.google.com/cse?cx=${cx}#gsc.tab=0&gsc.q=${encodeURIComponent(query)}`;
+  window.open(cseUrl, '_blank');
+}
+
+function openQuickPasteModal() {
+  const modal = document.getElementById('quick-paste-modal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeQuickPasteModal() {
+  const modal = document.getElementById('quick-paste-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function processPastedLeads() {
+  const inputEl = document.getElementById('paste-leads-text');
+  const targetRole = document.getElementById('paste-leads-role')?.value || 'tpo';
+  const text = (inputEl?.value || '').trim();
+  if (!text) {
+    alert("Please paste text or search results into the box.");
+    return;
+  }
+
+  // Parse lines or chunks
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const parsed = [];
+  const phoneRegex = /(?:\+?91[\-\s]?)?[6-9]\d{9}\b/;
+  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  const linkRegex = /https:\/\/[a-z]{2,3}\.linkedin\.com\/in\/[^\s"')]+/i;
+
+  let currentLead = null;
+
+  lines.forEach(line => {
+    // If line has " - " and mentions LinkedIn or role
+    if (line.includes(' - ') || line.includes(' | LinkedIn') || line.toLowerCase().includes('training') || line.toLowerCase().includes('placement') || line.toLowerCase().includes('student')) {
+      if (currentLead && currentLead.name) {
+        parsed.push(currentLead);
+      }
+      let cleanLine = line.replace(/\s*\|\s*LinkedIn.*$/i, '').replace(/https?:\/\/\S+/g, '').trim();
+      const parts = cleanLine.split(/\s*[\-–—]\s*/);
+      const name = parts[0]?.trim() || "Lead Contact";
+      const headline = parts[1]?.trim() || (targetRole === 'tpo' ? "Training & Placement Officer" : "Student");
+      const college = parts[2]?.trim() || (targetRole === 'tpo' ? "Engineering College" : "Tech Candidate");
+
+      currentLead = {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        name: name,
+        headline: headline,
+        college: college,
+        location: "Pune, Maharashtra",
+        phone: "",
+        email: "",
+        audience: targetRole,
+        linkedinUrl: "",
+        status: "Pasted Lead"
+      };
+    }
+
+    if (currentLead) {
+      const pm = line.match(phoneRegex);
+      if (pm && !currentLead.phone) currentLead.phone = pm[0].replace(/[^0-9]/g, '').slice(-10);
+
+      const em = line.match(emailRegex);
+      if (em && !currentLead.email) currentLead.email = em[0];
+
+      const lm = line.match(linkRegex);
+      if (lm && !currentLead.linkedinUrl) currentLead.linkedinUrl = lm[0];
+    }
+  });
+
+  if (currentLead && currentLead.name) {
+    parsed.push(currentLead);
+  }
+
+  // If no structured delimiters found, create single lead
+  if (parsed.length === 0) {
+    const pm = text.match(phoneRegex);
+    const em = text.match(emailRegex);
+    const lm = text.match(linkRegex);
+    parsed.push({
+      id: Date.now(),
+      name: lines[0]?.slice(0, 40) || "Pasted Contact",
+      headline: targetRole === 'tpo' ? "Training and Placement Officer" : "Student Candidate",
+      college: "Institute",
+      location: "Pune, Maharashtra",
+      phone: pm ? pm[0].replace(/[^0-9]/g, '').slice(-10) : "",
+      email: em ? em[0] : "",
+      audience: targetRole,
+      linkedinUrl: lm ? lm[0] : "",
+      status: "Pasted Lead"
+    });
+  }
+
+  const { addedCount, total } = addLeadsToPipeline(parsed);
+  leadsList = getSavedLeads();
+  renderLeadsTable();
+  updateLeadStats();
+  if (inputEl) inputEl.value = "";
+  closeQuickPasteModal();
+  showToast(`Added ${addedCount} new leads (total: ${total})!`);
+}
+
 function updateLeadStats() {
   const total = leadsList.length;
   const tpos = leadsList.filter(l => l.audience === 'tpo').length;
